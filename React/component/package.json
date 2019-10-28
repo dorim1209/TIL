@@ -21,7 +21,11 @@
       "airbnb"
     ],
     "rules": {
-      "react/jsx-filename-extension": 0
+      "react/jsx-filename-extension": 0,
+      "lines-between-class-members": 0,
+      "react/button-has-type": 0,
+      "quotes": 0,
+      "react/state-in-constructor": 0
     }
   },
   "browserslist": {
