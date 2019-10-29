@@ -1,23 +1,81 @@
 import React, { Component } from "react";
 import SearchBar from "./SearchBar";
 import ImageList from "./ImageList";
+import unsplash from "../api/unsplash";
 
 export default class App extends Component {
   state = {
     keyword: "",
-    images: []
+    images: [],
+    pageNum: 1
   };
 
   handleKeyword = word => {
-    this.setState({ keywrod: word });
+    this.setState({ keyword: word });
+  };
+  handlePlus = async () => {
+    await this.setState({ pageNum: this.state.pageNum + 1 });
+    console.log(this.state.pageNum);
+  };
+  handleMinus = async () => {
+    await this.setState({ pageNum: this.state.pageNum - 1 });
+    console.log(this.state.pageNum);
+  };
+
+  onSubmit = async () => {
+    const response = await unsplash.get("search/photos", {
+      params: {
+        page: this.state.pageNum,
+        query: this.state.keyword,
+        per_page: 5
+      }
+    });
+    this.setState({ images: response.data.results });
+    // `search/photos?query=${word}`
   };
 
   render() {
-    return (
-      <div className="ui container">
-        <SearchBar handleKeyword={this.handleKeyword} />
-        <ImageList images={this.state.images} />
-      </div>
-    );
+    if (this.state.images.length === 0) {
+      console.log(this.state.images);
+      return (
+        <div className="ui container">
+          <SearchBar
+            handleKeyword={this.handleKeyword}
+            onSubmit={this.onSubmit}
+          />
+          <ImageList images={this.state.images} />
+        </div>
+      );
+    }
+    if (this.state.pageNum > 1) {
+      console.log(this.state.images);
+      return (
+        <div className="ui container">
+          <SearchBar
+            handleKeyword={this.handleKeyword}
+            onSubmit={this.onSubmit}
+          />
+          <div>
+            <button onClick={this.handleMinus}>Prev</button>
+            <button onClick={this.handlePlus}>Next</button>
+          </div>
+          <ImageList images={this.state.images} />
+        </div>
+      );
+    } else {
+      console.log(this.state.images);
+      return (
+        <div className="ui container">
+          <SearchBar
+            handleKeyword={this.handleKeyword}
+            onSubmit={this.onSubmit}
+          />
+          <div>
+            <button onClick={this.handlePlus}>Next</button>
+          </div>
+          <ImageList images={this.state.images} />
+        </div>
+      );
+    }
   }
 }
