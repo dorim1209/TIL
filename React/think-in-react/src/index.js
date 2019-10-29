@@ -1,10 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import axios from "axios";
 
 import SearchBar from "./components/SearchBar";
 import ProductTable from "./components/ProductTable";
 
-const data = [
+/* const data = [
   {
     category: "Sporting Goods",
     price: "$49.99",
@@ -38,13 +39,39 @@ const data = [
   { category: "Electronics", price: "$199.99", stocked: true, name: "Nexus 7" }
 ];
 
+// 정적인 데이터
+
+ */
+
 class App extends React.Component {
   state = {
     keyword: "",
-    checked: false
+    checked: false,
+    data: null
   };
-  handleKeywordChange = keyword => {
-    this.setState({ keyword });
+
+  async getData(url) {
+    const res = await axios.get(url);
+    const { data } = res;
+    // const data = res.data;
+    data.sort((a, b) => {
+      if (a.category > b.category) return 1;
+      if (a.category < b.category) return -1;
+      return 0;
+    });
+    this.setState({ data });
+    //this.setStae({data:data});
+    console.log(data);
+  }
+
+  componentDidMount() {
+    //API를 찔러서 데이터를 가져오는 일을 합니다.
+    const url = "https://frozen-ocean-08299.herokuapp.com";
+    this.getData(url);
+  }
+
+  handleKeywordChange = word => {
+    this.setState({ keyword: word });
   };
   handleChecked = () => {
     this.setState({ checked: !this.state.checked });
@@ -57,7 +84,7 @@ class App extends React.Component {
           handleChecked={this.handleChecked}
         />
         <ProductTable
-          data={data}
+          data={this.state.data}
           keyword={this.state.keyword}
           checked={this.state.checked}
         />
