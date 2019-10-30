@@ -10,9 +10,6 @@ export default class App extends Component {
     pageNum: 1
   };
 
-  handleKeyword = word => {
-    this.setState({ keyword: word });
-  };
   handlePlus = async () => {
     await this.setState({ pageNum: this.state.pageNum + 1 });
     console.log(this.state.pageNum);
@@ -20,6 +17,10 @@ export default class App extends Component {
   handleMinus = async () => {
     await this.setState({ pageNum: this.state.pageNum - 1 });
     console.log(this.state.pageNum);
+  };
+
+  handleKeyword = word => {
+    this.setState({ keyword: word });
   };
 
   onSubmit = async () => {
@@ -56,8 +57,22 @@ export default class App extends Component {
             onSubmit={this.onSubmit}
           />
           <div>
-            <button onClick={this.handleMinus}>Prev</button>
-            <button onClick={this.handlePlus}>Next</button>
+            <button
+              onClick={async () => {
+                await this.handleMinus();
+                this.onSubmit();
+              }}
+            >
+              Prev
+            </button>
+            <button
+              onClick={async () => {
+                await this.handlePlus();
+                this.onSubmit();
+              }}
+            >
+              Next
+            </button>
           </div>
           <ImageList images={this.state.images} />
         </div>
@@ -71,7 +86,14 @@ export default class App extends Component {
             onSubmit={this.onSubmit}
           />
           <div>
-            <button onClick={this.handlePlus}>Next</button>
+            <button
+              onClick={async () => {
+                await this.handlePlus();
+                this.onSubmit();
+              }}
+            >
+              Next
+            </button>
           </div>
           <ImageList images={this.state.images} />
         </div>
