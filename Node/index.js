@@ -1,4 +1,4 @@
 const app = require("./app");
-const logger = require("./logger");
+require("./logger");
 
 app();
